@@ -2,7 +2,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.31'
 }
 
-group 'dev.jatzuk.head-first-design-patterns'
+group 'dev.jatzuk.HeadFirstDesignPatterns'
 version '1.0-SNAPSHOT'
 
 repositories {

@@ -5,7 +5,7 @@ import org.junit.Test
 
 /*
  * Created with passion and love
- *    for project head-first-design-patterns
+ *    for project HeadFirstDesignPatterns
  *        by Jatzuk on 10.06.2019
  *                                            *_____*
  *                                           *_*****_*
