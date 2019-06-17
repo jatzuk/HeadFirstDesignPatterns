@@ -5,7 +5,7 @@ import org.junit.Test
 /* 
  * Created with passion and love
  *    for project HeadFirstDesignPatterns
- *        by Jatzuk on 14.06.2019
+ *        by Jatzuk on 17.06.2019
  *                                            *_____*
  *                                           *_*****_*
  *                                          *_(O)_(O)_*
@@ -16,15 +16,20 @@ import org.junit.Test
  *                                           ***___***
  */
 
-class FactoryTest {
+class FactoriesTest {
     @Test
-    fun factoryTest() {
-        val nyStore = NYPizzaStore()
-        val chicagoStore = ChicagoPizzaStore()
-
-        var pizza = nyStore.orderPizza(PizzaType.CHEESE)
+    fun factoryMethodTest() {
+        var pizza = NYPizzaStore().orderPizza(PizzaType.CHEESE)
         println("Ethan ordered a ${pizza.name}\n")
-        pizza = chicagoStore.orderPizza(PizzaType.CHEESE)
+        pizza = ChicagoPizzaStore().orderPizza(PizzaType.CHEESE)
+        println("Joel ordered a ${pizza.name}\n")
+    }
+
+    @Test
+    fun abstractFactoryTest() {
+        var pizza = AbstractFactoryNYPizzaStore().orderPizza(PizzaType.CHEESE)
+        println("Ethan ordered a ${pizza.name}\n")
+        pizza = AbstractFactoryChicagoPizzaStore().orderPizza(PizzaType.CHEESE)
         println("Joel ordered a ${pizza.name}\n")
     }
 }

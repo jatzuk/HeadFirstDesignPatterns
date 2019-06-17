@@ -15,17 +15,13 @@ package chapter4
  */
 
 abstract class Pizza {
-    lateinit var name: String
-    lateinit var dough: String
-    lateinit var sauce: String
-    val toppings = ArrayList<String>()
+    val name: String = this::class.java.simpleName
 
     fun prepare() {
         println("Preparing $name")
         println("Tossing dough...")
         println("Adding sauce...")
         println("Adding toppings:")
-        toppings.forEach { println("\t$it") }
     }
 
     open fun bake() {
@@ -61,37 +57,23 @@ class NYPizzaStore : PizzaStore() {
     }
 }
 
-class NYStyleCheesePizza : Pizza() {
-    init {
-        name = "NY Style Sauce and Cheese Pizza"
-        dough = "Thin Crust Dough"
-        sauce = "Marinara Sauce"
-        toppings.add("Grated Reggiano Cheese")
+class NYStyleCheesePizza : Pizza()
+class NYStyleVeggiePizza : Pizza()
+class NYStyleClamPizza : Pizza()
+class NYStylePepperoniPizza : Pizza()
+
+class ChicagoPizzaStore : PizzaStore() {
+    override fun createPizza(type: PizzaType) = when (type) {
+        PizzaType.CHEESE -> ChicagoStyleCheesePizza()
+        PizzaType.VEGGIE -> ChicagoStyleVeggiePizza()
+        PizzaType.CLAM -> ChicagoStyleClamPizza()
+        PizzaType.PEPPERONI -> ChicagoStylePepperoniPizza()
     }
 }
 
-class NYStyleVeggiePizza : Pizza() {
-    init {
-        name = "NY Style Sauce and Cheese Pizza"
-        dough = "Thin Crust Dough"
-        sauce = "Marinara Sauce"
-        toppings.add("Grated Reggiano Cheese")
-    }
-}
+class ChicagoStyleCheesePizza : Pizza()
+class ChicagoStyleVeggiePizza : Pizza()
+class ChicagoStyleClamPizza : Pizza()
+class ChicagoStylePepperoniPizza : Pizza()
 
-class ChicagoStyleCheesePizza : Pizza() {
-    init {
-        name = "Chicago Style Deep Dish Cheese Pizza"
-        dough = "Extra thick Crust Dough"
-        sauce = "Plum Tomato Sauce"
-        toppings.add("Shredded Mozzarella Cheese")
-    }
-
-    override fun cut() {
-        println("Cutting the pizza into square slices")
-    }
-}
-
-enum class PizzaType(name: String) {
-    CHEESE("cheese"), VEGGIE("veggie"), CLAM("clam"), PEPPERONI("pepperoni")
-}
+enum class PizzaType { CHEESE, VEGGIE, CLAM, PEPPERONI }
