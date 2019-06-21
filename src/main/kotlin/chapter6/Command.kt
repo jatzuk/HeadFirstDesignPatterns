@@ -18,17 +18,11 @@ import java.lang.StringBuilder
 
 interface Command {
     fun execute()
-}
 
-class LightOnCommand(private val light: Light) : Command {
-    override fun execute() {
-        light.on()
-    }
-}
-
-class LightOffCommand(private val light: Light) : Command {
-    override fun execute() {
-        light.off()
+    companion object {
+        inline operator fun invoke(crossinline func: () -> Unit) = object : Command {
+            override fun execute() = func()
+        }
     }
 }
 
@@ -64,10 +58,35 @@ class GarageDoor {
     }
 }
 
-class GarageDoorUpCommand(private val garageDoor: GarageDoor) : Command {
-    override fun execute() {
-        garageDoor.up()
+class CeilingFan {
+    var speed = SPEED.OFF
+        private set(value) {
+            previousSpeed = field
+            field = value
+        }
+
+    var previousSpeed = SPEED.OFF
+        private set
+
+    fun on() {
+        speed = SPEED.LOW
+        println("CeilingFan is On\tspeed: $speed\tprev speed:$previousSpeed")
     }
+
+    fun high() {
+        speed = SPEED.HIGH
+    }
+
+    fun medium() {
+        speed = SPEED.MEDIUM
+    }
+
+    fun off() {
+        speed = SPEED.OFF
+        println("CeilingFan is Off\tspeed: $speed\tprev speed:$previousSpeed")
+    }
+
+    enum class SPEED { HIGH, MEDIUM, LOW, OFF }
 }
 
 class SimpleRemoteControl {
@@ -78,29 +97,25 @@ class SimpleRemoteControl {
     }
 }
 
-class NoCommand : Command {
-    override fun execute() {
-
-    }
-}
-
 class RemoteControl {
-    val onCommands = Array<Command>(7) { NoCommand() }
-    val offCommands = Array<Command>(7) { NoCommand() }
+    val onCommands = arrayOfNulls<Command>(7)
+    val offCommands = arrayOfNulls<Command>(7)
 
     fun onButtonWasPushed(slot: Int) {
-        onCommands[slot].execute()
+        onCommands[slot]?.execute()
     }
 
     fun offButtonWasPushed(slot: Int) {
-        offCommands[slot].execute()
+        offCommands[slot]?.execute()
     }
 
     override fun toString(): String {
         val sb = StringBuilder("\n---------- Remote Control ----------\n")
         repeat(onCommands.size) {
-            sb.append("[slot $it] ${onCommands[it].javaClass.simpleName} " +
-                    "${offCommands[it].javaClass.simpleName}\n")
+            sb.append(
+                "[slot $it] ${onCommands[it]?.javaClass?.simpleName} " +
+                        "${offCommands[it]?.javaClass?.simpleName}\n"
+            )
         }
         return sb.toString()
     }

@@ -22,7 +22,7 @@ class CommandTest {
     @Test
     fun lightTest() {
         with(remote) {
-            command = LightOnCommand(Light())
+            command = Command { Light().on() }
             buttonWasPressed()
         }
     }
@@ -30,8 +30,30 @@ class CommandTest {
     @Test
     fun garageLightTest() {
         with(remote) {
-            command = GarageDoorUpCommand(GarageDoor())
+            command = Command { GarageDoor().lightOn() }
             buttonWasPressed()
+        }
+    }
+
+    @Test
+    fun functionalTest() {
+        val light = Light()
+        val fan = CeilingFan()
+        val garage = GarageDoor()
+        with(RemoteControl()) {
+            onCommands[0] = Command { light.on() }
+            offCommands[0] = Command { light.off() }
+
+            onCommands[1] = Command { fan.on() }
+            offCommands[1] = Command { fan.off() }
+
+            onCommands[2] = Command { garage.lightOn() }
+            offCommands[2] = Command { garage.lightOff() }
+
+            repeat(3) {
+                onButtonWasPushed(it)
+                offButtonWasPushed(it)
+            }
         }
     }
 }
