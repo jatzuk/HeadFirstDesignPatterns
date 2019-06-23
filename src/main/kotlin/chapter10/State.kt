@@ -16,7 +16,7 @@ import kotlin.random.Random
  *                                           ***___***
  */
 
-class GumballMachine(var count: Int) {
+class GumballMachine(var count: Int, val location: String = "undefined location") {
     val soldOutState = SoldOutState()
     val noQuarterState = NoQuarterState(this)
     val hasQuarterState = HasQuarterState(this)
