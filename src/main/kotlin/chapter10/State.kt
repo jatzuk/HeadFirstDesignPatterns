@@ -1,5 +1,9 @@
 package chapter10
 
+import chapter11.GumballMachineRemote
+import java.io.Serializable
+import java.rmi.RemoteException
+import java.rmi.server.UnicastRemoteObject
 import kotlin.random.Random
 
 /* 
@@ -16,13 +20,16 @@ import kotlin.random.Random
  *                                           ***___***
  */
 
-class GumballMachine(var count: Int, val location: String = "undefined location") {
+class GumballMachine @Throws(RemoteException::class) constructor(
+    override var count: Int,
+    override val location: String = "undefined location"
+) : UnicastRemoteObject(), GumballMachineRemote {
     val soldOutState = SoldOutState()
     val noQuarterState = NoQuarterState(this)
     val hasQuarterState = HasQuarterState(this)
     val soldState = SoldState(this)
     val winnerState = WinnerState(this)
-    var state = if (count > 0) noQuarterState else soldOutState
+    override var state = if (count > 0) noQuarterState else soldOutState
 
     fun insertQuarter() {
         state.insertQuarter()
@@ -50,7 +57,7 @@ class GumballMachine(var count: Int, val location: String = "undefined location"
     override fun toString() = "Gumball machine has $count gumballs"
 }
 
-interface State {
+interface State : Serializable {
     fun insertQuarter()
 
     fun ejectQuarter()
@@ -105,7 +112,7 @@ class SoldOutState : State {
     }
 }
 
-class NoQuarterState(private val gumballMachine: GumballMachine) : State {
+class NoQuarterState(@Transient private val gumballMachine: GumballMachine) : State {
     override fun insertQuarter() {
         println("You inserted a quarter")
         gumballMachine.state = gumballMachine.hasQuarterState
@@ -124,7 +131,7 @@ class NoQuarterState(private val gumballMachine: GumballMachine) : State {
     }
 }
 
-class HasQuarterState(private val gumballMachine: GumballMachine) : State {
+class HasQuarterState(@Transient private val gumballMachine: GumballMachine) : State {
     override fun insertQuarter() {
         println("You can not insert another quarter")
     }
@@ -148,7 +155,7 @@ class HasQuarterState(private val gumballMachine: GumballMachine) : State {
     }
 }
 
-class WinnerState(private val gumballMachine: GumballMachine) : State {
+class WinnerState(@Transient private val gumballMachine: GumballMachine) : State {
     override fun insertQuarter() {
         println("Please wait we're already giving you a gumball")
     }
